@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Persons</title>
+    <link rel="stylesheet" type="text/css" href="/css/genericStyles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/common/js/components/model/Model.js"></script>
+    <script src="/persons/js/model/PersonModel.js"></script>
+    <script src="/persons/js/PersonView.js"></script>
+    <script src="/persons/js/PersonController.js"></script>
+    <script src="/persons/js/persons.js"></script>
+    <script src="/common/js/EventDispatcher.js"></script>
+    <script src="/common/js/AjaxUtils.js"></script>
+</head>
+<body>
+
+    <div id="centeringDiv" class="flexRow flexCenter">
+        <div id="mainContainer" class="flexColumn mainContainer"  style="width: 925px; height: 500px;">
+
+            <div id="personsTableDiv" class="gridTableDiv"></div>
+            <p>Click on a row to select it for editing</p>
+
+            <div class="flexRow">
+                <button type="button" id="newPersonBtn">New</button>
+                <button type="button" id="deletePersonBtn" disabled>Delete</button>
+            </div>
+
+            <div id="personDetailsDiv" class="personDetailsDiv" />
+
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+.flexColumn {
+    display:flex;
+    flex-direction: column;
+}
+
+.flexRow {
+    display:flex;
+    flex-direction: row;
+}
+
+.flexCenter {
+    justify-content: center;
+}
+
+.mainContainer {
+    border: solid 1px black;
+    background-color: #BDBDBD;
+}
+
+.mainContainer > p {
+    margin: 5px;
+}
+
+.mainContainer > div > label {
+    margin-left: 5px;
+}
+
+.mainContainer > div > button {
+    margin-left: 5px;
+}
+
+.gridTableDiv {
+    overflow: auto;
+    border: solid 1px black;
+    background-color: white;
+}
+
+.gridTableDiv > table {
+    width: 100%;
+}
+
+.gridTableDiv > table > tr > th {
+    border: solid 1px black;
+    background-color: #CCCCCC;
+}
+
+.gridTableDiv > table > tr > td {
+    border: solid 1px black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+.gridTableDiv > table > tr:nth-child(even){
+    background-color: #EEEEEE;
+}
+
+.gridTableDiv > table > tr:nth-child(odd){
+    background-color: white;
+}
+
+.gridTableDiv > table > tr:hover {
+    background-color: #DDDDDD;
+}
+
+.gridTitleBar {
+    height: 40px;
+    line-height: 40px;
+    background-color: green;
+    font-size: 20px;
+    padding-left: 5px;
+}
+
+.personDetailsDiv{
+    margin-top:5px;
+    margin-bottom: 5px;
+    height: 27px;
+}
