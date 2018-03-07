@@ -3,14 +3,14 @@ LoadingMask = function(targetEl) {
     this.targetEl = targetEl;
 
     this.init();
-    
+
 }
 
 LoadingMask.prototype = {
 
     init: function() {
 
-        this.maskEl = $("<div></div>").attr("class", "loadingMask").hide();
+        this.maskEl = $("<div></div>").attr("class", "loadingMask").hide().append($("<div></div>").attr("class","spinner"));
         $("body").append(this.maskEl);
     },
 

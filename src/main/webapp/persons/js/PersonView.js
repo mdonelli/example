@@ -13,6 +13,7 @@ PersonView.prototype = {
     init: function() {
         this.initHandlers();
         this.initListeners();
+        this.createGridTableHeader();
         this.createLoadingMask();
     },
 
@@ -32,6 +33,15 @@ PersonView.prototype = {
 
         this.model.recordsChangeEvent.addListener(this.personsListChangedHandler);
         this.model.loadEvent.addListener(this.modelLoadingHandler);
+    },
+
+    createGridTableHeader: function() {
+        var table = this.createGridTable().append(this.buildHeaderRow());
+        $("#personsTableHeaderDiv").append(table);
+    },
+
+    createGridTable: function() {
+        return $("<table></table>").attr("class","gridTable");
     },
 
     createLoadingMask() {
@@ -131,7 +141,7 @@ PersonView.prototype = {
 
         $("#personsTableDiv").empty();
 
-        var table = $("<table></table>").append(this.buildHeaderRow());
+        var table = this.createGridTable();
 
         var me = this;
         var personsData = this.model.getData();
@@ -146,10 +156,10 @@ PersonView.prototype = {
     buildHeaderRow: function() {
 
         var items = [
-            $("<th></th>").text("Name"),
-            $("<th></th>").text("Last Name"),
-            $("<th></th>").text("OIB"),
-            $("<th></th>").text("Age")
+            this.creteGridTableHeaderColumn().text("Name"),
+            this.creteGridTableHeaderColumn().text("Last Name"),
+            this.creteGridTableHeaderColumn().text("OIB"),
+            this.creteGridTableHeaderColumn().text("Age")
         ];
 
         var row = $("<tr></tr>").append(items);
@@ -157,20 +167,28 @@ PersonView.prototype = {
         return row;
     },
 
+    creteGridTableHeaderColumn: function() {
+        return $("<th></th>").attr("class", "gridTableHeaderColumn");
+    },
+
     buildPersonRow: function(personData) {
 
         var me = this;
 
         var items = [
-            $("<td></td>").text(personData.name),
-            $("<td></td>").text(personData.lastName),
-            $("<td></td>").text(personData.oib),
-            $("<td></td>").text(personData.age)
+            this.CreateGridTableColumn().text(personData.name),
+            this.CreateGridTableColumn().text(personData.lastName),
+            this.CreateGridTableColumn().text(personData.oib),
+            this.CreateGridTableColumn().text(personData.age)
         ];
 
-        var row = $("<tr></tr>").on("click", {idPerson: personData.idPerson}, this.selectPersonEventHandler).append(items);
+        var row = $("<tr></tr>").attr("class","gridTableRow").on("click", {idPerson: personData.idPerson}, this.selectPersonEventHandler).append(items);
 
         return row;
+    },
+
+    CreateGridTableColumn: function() {
+        return $("<td></td>").attr("class", "gridTableColumn");
     },
 
     deletePersonBtnEvent: function() {

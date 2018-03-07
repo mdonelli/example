@@ -44,6 +44,8 @@ GridView.prototype = {
         if (this.title != null) {
             this.createTitleBar();
         }
+        this.createGridTableHeaderContainer();
+        this.createGridTableHeader();
         this.createGridTableContainer();
         this.createGridTable();
         this.createToolbar();
@@ -66,18 +68,14 @@ GridView.prototype = {
             cfg.style = style;
         }
 
-        cfg.class = (this.class != null ? this.class : "") + " flexColumn gridContainer ";
+        cfg.class = (this.class != null ? this.class : "") + " flexColumn mainContainer ";
 
         this.mainContainer = createContainer(cfg);
     },
 
     buildTitleBar: function() {
 
-        var cfg = {
-            class: "gridTitleBar"
-        }
-
-        var titleBar = createContainer(cfg);
+        var titleBar = createContainer({ class: "gridTitleBar" });
         if (typeof this.title === "string") {
             $(titleBar).append($("<b></b>").text(this.title));
         } else {
@@ -93,25 +91,36 @@ GridView.prototype = {
         $(this.mainContainer).append(this.titleBar);
     },
 
+    createGridTableHeaderContainer: function() {
+        this.gridTableHeaderContainer = createContainer({class: "gridTableDiv"});
+        $(this.mainContainer).append(this.gridTableHeaderContainer);
+    },
+
+    buildGridTableHeader: function() {
+        var gridTableHeader = this.buildGridTable();
+
+        var gridColumns = [];
+
+        $.each(this.columns, function(index, column) {
+            gridColumns.push($("<th></th>").attr("class", "gridTableHeaderColumn").text(column.text));
+        });
+
+        $(gridTable).append($("<tr></tr>").append(gridColumns));
+
+        return gridTable;
+    },
+
+    createGridTableHeader: function() {
+        $(this.gridTableHeaderContainer).append(this.buildGridTableHeader());
+    },
+
     createGridTableContainer: function() {
         this.gridTableContainer = createContainer({class: "gridTableDiv"});
         $(this.mainContainer).append(this.gridTableContainer);
     },
 
     buildGridTable: function() {
-
-        var gridTable = $("<table></table>");
-
-        var gridColumns = [];
-
-        $.each(this.columns, function(index, column) {
-            gridColumns.push($("<th></th>").text(column.text));
-        });
-
-        $(gridTable).append($("<tr></tr>").append(gridColumns));
-
-        return gridTable;
-
+        return gridTable = $("<table></table>").attr("class", "gridTable");
     },
 
     createGridTable: function() {
@@ -120,7 +129,6 @@ GridView.prototype = {
     },
 
     buildToolbar: function() {
-
         return null;
     },
 
@@ -145,6 +153,8 @@ GridView.prototype = {
                 throw "GridView.update(): Unknown action: " + args.action;
             break;
         }
+
+        this.unmask();
     },
 
     createRows: function(rowsData) {
@@ -161,10 +171,10 @@ GridView.prototype = {
         var rowColumns = [];
 
         $.each(this.columns, function(index, column) {
-            rowColumns.push($("<td></td>").text(rowData[column.field]));
+            rowColumns.push($("<td></td>").attr("class", "gridTableColumn").text(rowData[column.field]));
         });
 
-        $(this.gridTable).append($("<tr></tr>").append(rowColumns));
+        $(this.gridTable).append($("<tr></tr>").attr("class", "gridTableRow").append(rowColumns));
     },
 
     onModelLoad: function() {
@@ -196,11 +206,11 @@ GridView.prototype = {
 
     mask: function() {
         if (!$(this.mainContainer).is(":hidden")) {
-            $(this.loadingMask).show();
+            this.loadingMask.show();
         }
     },
 
     unmask: function() {
-        $(this.loadingMask).hide();
+        this.loadingMask.hide();
     }
 }
