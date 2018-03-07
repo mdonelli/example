@@ -13,6 +13,7 @@ PersonView.prototype = {
     init: function() {
         this.initHandlers();
         this.initListeners();
+        this.createLoadingMask();
     },
 
     initHandlers: function() {
@@ -22,6 +23,7 @@ PersonView.prototype = {
         this.deletePersonBtnHandler = this.deletePersonBtnEvent.bind(this);
         this.selectPersonEventHandler = this.selectPersonEvent.bind(this);
         this.personsListChangedHandler = this.refreshPersonList.bind(this);
+        this.modelLoadingHandler = this.onModelLoad.bind(this);
     },
 
     initListeners: function() {
@@ -29,6 +31,11 @@ PersonView.prototype = {
         $("#deletePersonBtn").click(this.deletePersonBtnHandler);
 
         this.model.recordsChangeEvent.addListener(this.personsListChangedHandler);
+        this.model.loadEvent.addListener(this.modelLoadingHandler);
+    },
+
+    createLoadingMask() {
+        this.mask = new LoadingMask($("#mainContainer"));
     },
 
     newPersonBtnEvent: function() {
@@ -65,6 +72,7 @@ PersonView.prototype = {
     },
 
     createPersonBtnEvent: function() {
+        this.mask.show();
         this.createPersonEvent.notify({
             name: $("#nameField").val(),
             lastName: $("#lastNameField").val(),
@@ -99,6 +107,7 @@ PersonView.prototype = {
     },
 
     editPersonBtnEvent: function() {
+        this.mask.show();
         this.updatePersonEvent.notify({
             idPerson: $("#idPerson").val(),
             name: $("#nameField").val(),
@@ -109,10 +118,13 @@ PersonView.prototype = {
     },
 
     refreshPersonList: function(sender, args) {
+
         $("#personDetailsDiv").empty();
         $("#deletePersonBtn").prop('disabled', true);
 
         this.buildPersonsTable();
+
+        this.mask.hide();
     },
 
     buildPersonsTable: function() {
@@ -162,9 +174,14 @@ PersonView.prototype = {
     },
 
     deletePersonBtnEvent: function() {
+        this.mask.show();
         this.deletePersonEvent.notify({
             idPerson: $("#idPerson").val()
         });
+    },
+
+    onModelLoad: function() {
+        this.mask.show();
     }
 
 

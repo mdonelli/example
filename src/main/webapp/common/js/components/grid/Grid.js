@@ -131,6 +131,16 @@ Grid.prototype = {
 
     isRendered: function() {
         return this.isRendered;
+    },
+
+    mask: function() {
+        if(this.isRendered) {
+            this.view.mask();
+        }
+    },
+
+    unmask: function() {
+        this.view.unmask();
     }
 
 

@@ -4,6 +4,7 @@ function Model() {
     this.tempRecordIdx = 1;
 
     this.recordsChangeEvent = new Event(this);
+    this.loadEvent = new Event(this);
 
     this.init();
 }
@@ -26,6 +27,11 @@ Model.prototype = {
     },
 
     load: function() {
+        this.loadEvent.notify({action: "load"});
+        this.loadData();
+    },
+
+    loadData: function() {
         //abstract
     },
 

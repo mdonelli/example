@@ -26,14 +26,17 @@ GridView.prototype = {
         this.initHandlers();
         this.initListeners();
         this.initItems();
+        this.initMask();
     },
 
     initHandlers: function() {
         this.recordChangedHandler = this.update.bind(this);
+        this.modelLoadingHandler = this.onModelLoad.bind(this);
     },
 
     initListeners: function() {
         this.model.recordsChangeEvent.addListener(this.recordChangedHandler);
+        this.model.loadEvent.addListener(this.modelLoadingHandler);
     },
 
     initItems: function() {
@@ -126,6 +129,10 @@ GridView.prototype = {
         $(this.mainContainer).append(this.toolbar);
     },
 
+    initMask: function() {
+        this.loadingMask = new LoadingMask($(this.mainContainer));
+    },
+
     update: function(sender, args) {
 
         switch (args.action) {
@@ -160,6 +167,10 @@ GridView.prototype = {
         $(this.gridTable).append($("<tr></tr>").append(rowColumns));
     },
 
+    onModelLoad: function() {
+        this.mask();
+    },
+
     // getters / setters
 
     destroy: function() {
@@ -176,10 +187,20 @@ GridView.prototype = {
     },
 
     show: function() {
-
+        $(this.mainContainer).show();
     },
 
     hide: function() {
+        $(this.mainContainer).hide();
+    },
 
+    mask: function() {
+        if (!$(this.mainContainer).is(":hidden")) {
+            $(this.loadingMask).show();
+        }
+    },
+
+    unmask: function() {
+        $(this.loadingMask).hide();
     }
 }

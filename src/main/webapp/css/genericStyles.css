@@ -1,10 +1,10 @@
 .flexColumn {
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
 .flexRow {
-    display:flex;
+    display: flex;
     flex-direction: row;
 }
 
@@ -75,4 +75,13 @@
     margin-top:5px;
     margin-bottom: 5px;
     height: 27px;
+}
+
+.loadingMask {
+    position: absolute !important;
+    z-index: 99 !important;
+    opacity: 0.5 !important;
+    background-color: #000000 !important;
+    margin: 0px !important;
+    padding: 0px !important;
 }

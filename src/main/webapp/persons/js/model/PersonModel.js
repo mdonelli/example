@@ -13,7 +13,7 @@ PersonModel.prototype.init = function() {
     this.name = "PersonModel";
 };
 
-PersonModel.prototype.load = function() {
+PersonModel.prototype.loadData = function() {
 
     var me = this;
     AJAX.call(CNTR_PERSONS, {
