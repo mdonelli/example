@@ -34,12 +34,13 @@ Grid.prototype = {
 
     initProperties: function() {
 
-        this.renderTo = (this.configObject == null || this.configObject.renderTo == null) ? true : this.configObject.renderTo;
+        this.appendTo = (this.configObject == null || this.configObject.appendTo == null) ? document.body : this.configObject.appendTo;
         this.autoLoad = (this.configObject == null || this.configObject.autoLoad == null) ? true : this.configObject.autoLoad;
         this.autoShow = (this.configObject == null || this.configObject.autoShow == null) ? true : this.configObject.autoShow;
+        this.asPopup = (this.configObject == null || this.configObject.asPopup == null) ? false : this.configObject.autoShow;
         this.columnsCfg = (this.configObject == null || this.configObject.columns == null) ? [] : this.configObject.columns;
-        this.height = (this.configObject == null || this.configObject.height == null) ? null : this.configObject.height;
-        this.width = (this.configObject == null || this.configObject.width == null) ? null : this.configObject.width;
+        this.height = (this.configObject == null || this.configObject.height == null) ? "100%" : this.configObject.height;
+        this.width = (this.configObject == null || this.configObject.width == null) ? "100%" : this.configObject.width;
         this.title = (this.configObject == null || this.configObject.title == null) ? null : this.configObject.title;
         this.css = (this.configObject == null || this.configObject.css == null) ? null : this.configObject.css;
     },
@@ -70,7 +71,8 @@ Grid.prototype = {
         this.view = new GridView({
             columns: columns,
             model: this.model,
-            renderTo: this.renderTo,
+            appendTo: this.appendTo,
+            asPopup: this.asPopup,
             title: this.title,
             height: this.height,
             width: this.width,

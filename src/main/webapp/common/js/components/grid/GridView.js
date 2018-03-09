@@ -6,7 +6,7 @@ function GridView(cfg) {
 
     this.columns = cfg.columns;
     this.model = cfg.model;
-    this.renderTo = cfg.renderTo;
+    this.appendTo = cfg.appendTo;
     this.title = cfg.title;
     this.height = cfg.height;
     this.width = cfg.width;
@@ -26,7 +26,11 @@ GridView.prototype = {
         this.initHandlers();
         this.initListeners();
         this.initItems();
+        if (this.asPopup) {
+            this.initPopup();
+        }
         this.initMask();
+        this.resize();
     },
 
     initHandlers: function() {
@@ -52,30 +56,12 @@ GridView.prototype = {
     },
 
     createMainContainer: function() {
-        var style = "";
-
-        if (!isNaN(this.height)) {
-            style += "height: " + this.height + "px; ";
-        }
-
-        if (!isNaN(this.width)) {
-            style += "width: " + this.width + "px; ";
-        }
-
-        var cfg = {};
-
-        if (style.length >0) {
-            cfg.style = style;
-        }
-
-        cfg.class = (this.class != null ? this.class : "") + " flexColumn mainContainer ";
-
-        this.mainContainer = createContainer(cfg);
+        this.mainContainer = $("<div></div>").attr("class", "mainContainer");
     },
 
     buildTitleBar: function() {
 
-        var titleBar = createContainer({ class: "gridTitleBar" });
+        var titleBar = $("<div></div>").attr("class", "gridTitleBar");
         if (typeof this.title === "string") {
             $(titleBar).append($("<b></b>").text(this.title));
         } else {
@@ -92,7 +78,7 @@ GridView.prototype = {
     },
 
     createGridTableHeaderContainer: function() {
-        this.gridTableHeaderContainer = createContainer({class: "gridTableDiv"});
+        this.gridTableHeaderContainer = $("<div></div>").attr("class", "gridTableHeaderDiv");
         $(this.mainContainer).append(this.gridTableHeaderContainer);
     },
 
@@ -115,7 +101,7 @@ GridView.prototype = {
     },
 
     createGridTableContainer: function() {
-        this.gridTableContainer = createContainer({class: "gridTableDiv"});
+        this.gridTableContainer = $("<div></div>").attr("class", "gridTableDiv");
         $(this.mainContainer).append(this.gridTableContainer);
     },
 
@@ -137,8 +123,16 @@ GridView.prototype = {
         $(this.mainContainer).append(this.toolbar);
     },
 
+    initPopup() {
+        //to do
+    },
+
     initMask: function() {
         this.loadingMask = new LoadingMask($(this.mainContainer));
+    },
+
+    resize: function() {
+        $(this.mainContainer).width(this.width).height(this.height);
     },
 
     update: function(sender, args) {
@@ -193,7 +187,7 @@ GridView.prototype = {
     },
 
     render: function() {
-        $(this.renderTo).append(this.mainContainer);
+        $(this.appendTo).append(this.mainContainer);
     },
 
     show: function() {

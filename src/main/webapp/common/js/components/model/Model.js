@@ -65,7 +65,7 @@ Model.prototype = {
             return null;
         }
 
-        $.extend(record, found)
+        $.extend(record, found);
 
         return record;
     },

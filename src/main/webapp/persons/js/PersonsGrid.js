@@ -1,15 +1,16 @@
-function PersonsGrid() {
+function PersonsGrid(cfg) {
 
-    var cfg = {
-        renderTo: $(document.body),
-        width: 900,
-        height: 500,
+    var defaultCfg = {
         title: "Persons Grid",
         model: new PersonModel(),
         columns: []
     };
 
-    Grid.call(this, cfg);
+    if (cfg != null) {
+        $.extend(defaultCfg, cfg);
+    }
+
+    Grid.call(this, defaultCfg);
 };
 
 PersonsGrid.prototype = Object.create(Grid.prototype);
