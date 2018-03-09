@@ -1,0 +1,55 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    border: solid 1px black;
+    background-color: #BDBDBD;
+}
+
+.gridTableHeaderDiv {
+    background-color: white;
+    border-left: solid 1px black;
+    border-right: solid 1px black;
+}
+
+.gridTableDiv {
+    overflow: auto;
+    background-color: white;
+    border-left: solid 1px black;
+    border-right: solid 1px black;
+}
+
+.gridTable {
+    table-layout:fixed;
+    width: 100%;
+}
+
+.gridTableHeaderColumn {
+    border: solid 1px black;
+    background-color: #CCCCCC;
+}
+
+.gridTableColumn {
+    border: solid 1px black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.gridTableRow:nth-child(even){
+    background-color: #EEEEEE;
+}
+
+.gridTableRow:nth-child(odd){
+    background-color: white;
+}
+
+.gridTableRow:hover {
+    background-color: #DDDDDD;
+}
+
+.gridTitleBar {
+    height: 40px;
+    line-height: 40px;
+    background-color: green;
+    font-size: 20px;
+    padding-left: 5px;
+}
