@@ -21,7 +21,7 @@ LoadingMask.prototype = {
 
         var offset = $(this.targetEl).offset();
 
-        $(this.maskEl).show().offset({
+        $(this.maskEl).show().css('z-index', $(this.targetEl).css('z-index') + 1).offset({
             top: offset.top,
             left: offset.left
         });

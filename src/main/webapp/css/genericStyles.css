@@ -30,7 +30,7 @@
 }
 
 .gridTableHeaderDiv {
-    background-color: white;
+    background-color: #BDBDBD;
     border-left: solid 1px black;
     border-right: solid 1px black;
 }
@@ -78,7 +78,6 @@
 
 .loadingMask {
     position: absolute !important;
-    z-index: 99 !important;
     opacity: 0.5 !important;
     background-color: #000000 !important;
     margin: 0px !important;

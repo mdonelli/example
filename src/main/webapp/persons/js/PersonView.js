@@ -10,10 +10,12 @@ function PersonView(model) {
 
 PersonView.prototype = {
 
+    // init
+
     init: function() {
         this.initHandlers();
         this.initListeners();
-        this.createGridTableHeader();
+        this.createTableHeader();
         this.createLoadingMask();
     },
 
@@ -35,22 +37,90 @@ PersonView.prototype = {
         this.model.loadEvent.addListener(this.modelLoadingHandler);
     },
 
-    createGridTableHeader: function() {
-        var table = this.createGridTable().append(this.buildHeaderRow());
-        $("#personsTableHeaderDiv").append(table);
-    },
-
-    createGridTable: function() {
-        return $("<table></table>").attr("class","gridTable");
+    createTableHeader: function() {
+        $("#personsTableHeader").append(this.buildHeaderRow());
     },
 
     createLoadingMask() {
         this.mask = new LoadingMask($("#mainContainer"));
     },
 
+    buildHeaderRow: function() {
+
+        var items = [
+            this.buildHeaderColumn("Name"),
+            this.buildHeaderColumn("Last Name"),
+            this.buildHeaderColumn("OIB"),
+            this.buildHeaderColumn("Age")
+        ];
+
+        var row = $("<tr></tr>").append(items);
+
+        return row;
+    },
+
+    buildHeaderColumn: function(text) {
+        return $("<th></th>").attr("class", "gridTableHeaderColumn").text(text);
+    },
+
+    // load / refresh
+
+    onModelLoad: function() {
+        this.mask.show();
+    },
+
+    refreshPersonList: function(sender, args) {
+
+        $("#personDetailsDiv").empty();
+        this.disableDeleteBtn();
+
+        this.createPersonsTableRows();
+        this.updateTableHeaderWidth();
+
+        this.mask.hide();
+    },
+
+    createPersonsTableRows: function() {
+
+        var tableBody = $("#personsTableBody");
+        tableBody.empty();
+
+        var me = this;
+
+        jQuery.each(this.model.getData(), function(index, personData) {
+            tableBody.append(me.buildPersonRow(personData));
+        });
+    },
+
+    buildPersonRow: function(personData) {
+
+        var me = this;
+
+        var items = [
+            this.buildTableColumn(personData.name),
+            this.buildTableColumn(personData.lastName),
+            this.buildTableColumn(personData.oib),
+            this.buildTableColumn(personData.age)
+        ];
+
+        var row = $("<tr></tr>").attr("class","gridTableRow").on("click", {idPerson: personData.idPerson}, this.selectPersonEventHandler).append(items);
+
+        return row;
+    },
+
+    buildTableColumn: function(text) {
+        return $("<td></td>").attr("class", "gridTableColumn").text(text);
+    },
+
+    updateTableHeaderWidth: function() {
+        $("#personsTableHeader").width($("#personsTableBody").innerWidth());
+    },
+
+    // insert
+
     newPersonBtnEvent: function() {
         $("#personDetailsDiv").empty();
-        $("#deletePersonBtn").prop('disabled', true);
+        this.disableDeleteBtn();
         $("#personDetailsDiv").append(this.buildNewPersonDetails());
     },
 
@@ -65,41 +135,53 @@ PersonView.prototype = {
 
     buildPersonDetails: function() {
 
-        var items = [
-            $("<label></label>").attr("for", "nameField").text("Name:"),
-            $("<input></input>").attr("type", "text").attr("id", "nameField"),
-            $("<label></label>").attr("for", "lastNameField").text("Last name:"),
-            $("<input></input>").attr("type", "text").attr("id", "lastNameField"),
-            $("<label></label>").attr("for", "oibField").text("Oib:"),
-            $("<input></input>").attr("type", "text").attr("id", "oibField"),
-            $("<label></label>").attr("for", "ageField").text("Age:"),
-            $("<input></input>").attr("type", "text").attr("id", "ageField"),
-            $("<input></input>").attr("type", "hidden").attr("id", "idPerson").val(0)
-            ];
+        var items = this.buildTextFields();
+
+        items.push(this.buildHiddenField());
 
         return items;
 
     },
 
+    buildTextFields: function() {
+        return this.buildTexField("name", "Name")
+           .concat(this.buildTexField("lastName", "Last Name"))
+           .concat(this.buildTexField("oib", "Oib"))
+           .concat(this.buildTexField("age", "Age"));
+    },
+
+    buildTexField: function (id, label) {
+        return [
+            $("<label></label>").attr("for", id).text(label + ":"),
+            $("<input></input>").attr("type", "text").attr("id", id)
+        ];
+    },
+
+    buildHiddenField: function(id) {
+        return $("<input></input>").attr("type", "hidden").attr("id", "idPerson").val(0);
+    },
+
     createPersonBtnEvent: function() {
         this.mask.show();
         this.createPersonEvent.notify({
-            name: $("#nameField").val(),
-            lastName: $("#lastNameField").val(),
-            oib: $("#oibField").val(),
-            age: $("#ageField").val()
+            name: $("#name").val(),
+            lastName: $("#lastName").val(),
+            oib: $("#oib").val(),
+            age: $("#age").val()
         });
     },
 
+    // update
+
     selectPersonEvent: function(event) {
         $("#personDetailsDiv").empty();
-        $("#personDetailsDiv").append(this.buildUpdatePersonDetails(event.data.idPerson));
+        $("#personDetailsDiv").append(this.buildUpdatePersonDetails());
         this.fillPersonDetails(this.model.getRecord(event.data.idPerson));
 
-        $("#deletePersonBtn").prop('disabled', false);
+        this.enableDeleteBtn();
     },
 
-    buildUpdatePersonDetails: function(idPerson) {
+    buildUpdatePersonDetails: function() {
 
         var items = this.buildPersonDetails();
 
@@ -110,86 +192,24 @@ PersonView.prototype = {
 
     fillPersonDetails: function(personData) {
         $("#idPerson").val(personData.idPerson);
-        $("#nameField").val(personData.name);
-        $("#lastNameField").val(personData.lastName);
-        $("#oibField").val(personData.oib);
-        $("#ageField").val(personData.age);
+        $("#name").val(personData.name);
+        $("#lastName").val(personData.lastName);
+        $("#oib").val(personData.oib);
+        $("#age").val(personData.age);
     },
 
     editPersonBtnEvent: function() {
         this.mask.show();
         this.updatePersonEvent.notify({
             idPerson: $("#idPerson").val(),
-            name: $("#nameField").val(),
-            lastName: $("#lastNameField").val(),
-            oib: $("#oibField").val(),
-            age: $("#ageField").val()
+            name: $("#name").val(),
+            lastName: $("#lastName").val(),
+            oib: $("#oib").val(),
+            age: $("#age").val()
         });
     },
 
-    refreshPersonList: function(sender, args) {
-
-        $("#personDetailsDiv").empty();
-        $("#deletePersonBtn").prop('disabled', true);
-
-        this.buildPersonsTable();
-
-        this.mask.hide();
-    },
-
-    buildPersonsTable: function() {
-
-        $("#personsTableDiv").empty();
-
-        var table = this.createGridTable();
-
-        var me = this;
-        var personsData = this.model.getData();
-
-        jQuery.each(personsData, function(index, personData) {
-            table.append(me.buildPersonRow(personData));
-        });
-
-        $("#personsTableDiv").append(table);
-    },
-
-    buildHeaderRow: function() {
-
-        var items = [
-            this.creteGridTableHeaderColumn().text("Name"),
-            this.creteGridTableHeaderColumn().text("Last Name"),
-            this.creteGridTableHeaderColumn().text("OIB"),
-            this.creteGridTableHeaderColumn().text("Age")
-        ];
-
-        var row = $("<tr></tr>").append(items);
-
-        return row;
-    },
-
-    creteGridTableHeaderColumn: function() {
-        return $("<th></th>").attr("class", "gridTableHeaderColumn");
-    },
-
-    buildPersonRow: function(personData) {
-
-        var me = this;
-
-        var items = [
-            this.CreateGridTableColumn().text(personData.name),
-            this.CreateGridTableColumn().text(personData.lastName),
-            this.CreateGridTableColumn().text(personData.oib),
-            this.CreateGridTableColumn().text(personData.age)
-        ];
-
-        var row = $("<tr></tr>").attr("class","gridTableRow").on("click", {idPerson: personData.idPerson}, this.selectPersonEventHandler).append(items);
-
-        return row;
-    },
-
-    CreateGridTableColumn: function() {
-        return $("<td></td>").attr("class", "gridTableColumn");
-    },
+    // delete
 
     deletePersonBtnEvent: function() {
         this.mask.show();
@@ -198,10 +218,12 @@ PersonView.prototype = {
         });
     },
 
-    onModelLoad: function() {
-        this.mask.show();
+    disableDeleteBtn: function() {
+        $("#deletePersonBtn").prop('disabled', true);
+    },
+
+    enableDeleteBtn: function() {
+        $("#deletePersonBtn").prop('disabled', false);
     }
-
-
 
 }
