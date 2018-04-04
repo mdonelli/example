@@ -3,6 +3,6 @@
 $(function () {
      var grid = new PersonsGrid({
         width: 900,
-        height: 500,
+        height: 300,
      });
  });

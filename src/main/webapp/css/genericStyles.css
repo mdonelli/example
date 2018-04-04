@@ -108,3 +108,7 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.invalidField {
+    border: 2px solid red;
+}

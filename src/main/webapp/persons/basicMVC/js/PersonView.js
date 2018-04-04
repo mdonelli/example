@@ -134,34 +134,50 @@ PersonView.prototype = {
     },
 
     buildPersonDetails: function() {
-
-        var items = this.buildTextFields();
-
-        items.push(this.buildHiddenField());
-
-        return items;
-
+        return this.buildTexField("name", "Name", function(val){
+            return (val == null || val == "") ? "Name is mandatory" : (val.match(/[^a-zšđčćž\-'' ]/gi)) ? "Name contains invalid characters" : true;
+            })
+           .concat(this.buildTexField("lastName", "Last Name", function(val){
+                return (val == null || val == "") ? "Last Name is mandatory" : (val.match(/[^a-zšđčćž\-'' ]/gi)) ? "Last Name contains invalid characters" : true;
+                })
+           )
+           .concat(this.buildTexField("oib", "Oib", function(val){
+                return (val == null || val == "") ? true : (val.length != 11 || val.match(/\D/gi)) ? "Oib must be 11 digits" : true;
+                })
+           )
+           .concat(this.buildTexField("age", "Age", function(val){
+                return (val == null || val == "") ? true : (val.match(/\D/gi) || val < 1 || val > 121) ? "Age must be 3 or less digits" : true;
+                })
+           );
     },
 
-    buildTextFields: function() {
-        return this.buildTexField("name", "Name")
-           .concat(this.buildTexField("lastName", "Last Name"))
-           .concat(this.buildTexField("oib", "Oib"))
-           .concat(this.buildTexField("age", "Age"));
-    },
+    buildTexField: function (id, label, validator) {
 
-    buildTexField: function (id, label) {
+        var field = $("<input></input>").attr("type", "text").attr("id", id);
+        field.get(0).validator = validator;
+        FieldValidation.create(field.get(0));
         return [
-            $("<label></label>").attr("for", id).text(label + ":"),
-            $("<input></input>").attr("type", "text").attr("id", id)
+            $("<label></label>").attr("for", id).text(label + ":"), field
         ];
     },
 
-    buildHiddenField: function(id) {
-        return $("<input></input>").attr("type", "hidden").attr("id", "idPerson").val(0);
+    validatePersonDetails: function() {
+
+        var isValid = true;
+
+        jQuery.each($("#personDetailsDiv > input"), function(index, element) {
+            if (element.validate && element.validate() !== true) {
+                isValid = false;
+            }
+        });
+
+        return isValid;
     },
 
     createPersonBtnEvent: function() {
+        if (!this.validatePersonDetails()) {
+            return;
+        }
         this.mask.show();
         this.createPersonEvent.notify({
             name: $("#name").val(),
@@ -181,9 +197,19 @@ PersonView.prototype = {
         this.enableDeleteBtn();
     },
 
+    buildHiddenField: function(id) {
+        var field = $("<input></input>").attr("type", "hidden").attr("id", "idPerson").val(0);
+        field.get(0).validator = function(val) {
+            return (val != null && val > 0);
+        };
+        FieldValidation.create(field.get(0));
+        return field;
+    },
+
     buildUpdatePersonDetails: function() {
 
         var items = this.buildPersonDetails();
+        items.push(this.buildHiddenField());
 
         items.push($("<button></button>").attr("type","button").text("Edit").click(this.editPersonBtnHandler));
 
@@ -199,6 +225,9 @@ PersonView.prototype = {
     },
 
     editPersonBtnEvent: function() {
+        if (!this.validatePersonDetails()) {
+            return;
+        }
         this.mask.show();
         this.updatePersonEvent.notify({
             idPerson: $("#idPerson").val(),

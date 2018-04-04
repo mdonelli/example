@@ -26,9 +26,6 @@ GridView.prototype = {
         this.initHandlers();
         this.initListeners();
         this.initItems();
-        if (this.asPopup) {
-            this.initPopup();
-        }
         this.initMask();
         this.resize();
     },
@@ -97,7 +94,8 @@ GridView.prototype = {
     },
 
     createGridTableHeader: function() {
-        $(this.gridTableHeaderContainer).append(this.buildGridTableHeader());
+        this.gridTableHeader = this.buildGridTableHeader();
+        $(this.gridTableHeaderContainer).append(this.gridTableHeader);
     },
 
     createGridTableContainer: function() {
@@ -123,16 +121,17 @@ GridView.prototype = {
         $(this.mainContainer).append(this.toolbar);
     },
 
-    initPopup() {
-        //to do
-    },
-
     initMask: function() {
         this.loadingMask = new LoadingMask($(this.mainContainer));
     },
 
     resize: function() {
         $(this.mainContainer).width(this.width).height(this.height);
+        this.updateGridTableHeaderWidth();
+    },
+
+    updateGridTableHeaderWidth: function() {
+        $(this.gridTableHeader).width(this.gridTable.innerWidth());
     },
 
     update: function(sender, args) {
@@ -147,6 +146,8 @@ GridView.prototype = {
                 throw "GridView.update(): Unknown action: " + args.action;
             break;
         }
+
+        this.updateGridTableHeaderWidth();
 
         this.unmask();
     },
